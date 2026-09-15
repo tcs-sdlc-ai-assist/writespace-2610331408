@@ -1,1 +1,0 @@
-Implementing next todo: foundation. Files: .gitignore, README.md, vercel.json, frontend configs, storage/auth/Avatar, unit tests, and frontend/e2e/foundation.spec.js. Verify: cd frontend && node node_modules/vitest/vitest.mjs run src/utils/storage.test.js src/utils/auth.test.js.
