@@ -7,6 +7,7 @@ import Home from './pages/Home';
 import ReadBlog from './pages/ReadBlog';
 import WriteBlog from './pages/WriteBlog';
 import AdminDashboard from './pages/AdminDashboard';
+import UserManagement from './pages/UserManagement';
 
 /** Defines the WriteSpace client routes available at the current feature stage. */
 export default function App() {
@@ -20,6 +21,7 @@ export default function App() {
       <Route element={<ProtectedRoute><WriteBlog /></ProtectedRoute>} path="/write" />
       <Route element={<ProtectedRoute><WriteBlog /></ProtectedRoute>} path="/edit/:id" />
       <Route element={<ProtectedRoute adminOnly><AdminDashboard /></ProtectedRoute>} path="/admin" />
+      <Route element={<ProtectedRoute adminOnly><UserManagement /></ProtectedRoute>} path="/users" />
       <Route element={<Navigate replace to="/" />} path="*" />
     </Routes>
   );
