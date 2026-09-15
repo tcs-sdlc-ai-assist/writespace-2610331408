@@ -25,7 +25,7 @@ export function getAvatar(role, label = '') {
  * @param {{role: string, label?: string}} props Avatar role and label.
  * @returns {JSX.Element} Avatar element.
  */
-export default function Avatar({ role, label }) {
+export default function Avatar({ role, label = '' }) {
   return getAvatar(role, label);
 }
 
@@ -34,6 +34,3 @@ Avatar.propTypes = {
   label: PropTypes.string,
 };
 
-Avatar.defaultProps = {
-  label: '',
-};
