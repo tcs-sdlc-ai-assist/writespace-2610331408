@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 import {
   DEFAULT_ADMIN,
   authenticate,
@@ -8,23 +8,49 @@ import {
   validateAccount,
 } from './auth';
 
+afterEach(() => window.localStorage.clear());
+
 describe('WriteSpace authentication helpers', () => {
   it('authenticates the immutable default administrator before stored users', () => {
     expect(authenticate('admin', 'admin')).toEqual(DEFAULT_ADMIN);
+  });
+
+  it('authenticates a stored user and returns only the safe session fields', () => {
+    window.localStorage.setItem('writespace_users', JSON.stringify([{
+      id: 'writer-1',
+      username: 'writer',
+      password: 'secret',
+      displayName: 'Stored Writer',
+      role: 'user',
+    }]));
+
+    expect(authenticate(' writer ', 'secret')).toEqual({
+      userId: 'writer-1',
+      username: 'writer',
+      displayName: 'Stored Writer',
+      role: 'user',
+    });
   });
 
   it('returns null for incorrect default admin credentials', () => {
     expect(authenticate('admin', 'wrong')).toBeNull();
   });
 
-  it('validates required fields, mismatched passwords, and duplicate usernames', () => {
+  it('validates missing account fields and the reserved administrator username', () => {
+    expect(validateAccount({ displayName: '', username: 'admin', password: '' }, [])).toEqual({
+      displayName: 'Display Name is required.',
+      username: 'Username is already taken.',
+      password: 'Password is required.',
+    });
+  });
+
+  it('validates mismatched passwords and duplicate usernames', () => {
     expect(
       validateAccount(
-        { displayName: '', username: 'admin', password: 'one', confirmPassword: 'two' },
+        { displayName: 'Writer', username: 'writer', password: 'one', confirmPassword: 'two' },
         [{ username: 'writer' }],
       ),
     ).toEqual({
-      displayName: 'Display Name is required.',
       username: 'Username is already taken.',
       confirmPassword: 'Passwords do not match.',
     });

@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   clearSession,
   clearWriteSpaceData,
@@ -11,6 +11,7 @@ import {
 } from './storage';
 
 afterEach(() => {
+  vi.restoreAllMocks();
   window.localStorage.clear();
 });
 
@@ -23,6 +24,16 @@ describe('WriteSpace storage helpers', () => {
     expect(saveUsers(users)).toBe(true);
     expect(getPosts()).toEqual(posts);
     expect(getUsers()).toEqual(users);
+  });
+
+  it('returns false when a storage write fails', () => {
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new DOMException('Storage full', 'QuotaExceededError');
+    });
+
+    expect(savePosts([{ id: 'post-1' }])).toBe(false);
+    expect(saveUsers([{ id: 'user-1' }])).toBe(false);
+    expect(setSession({ userId: 'user-1' })).toBe(false);
   });
 
   it('returns safe empty arrays for corrupt local storage arrays', () => {
@@ -43,6 +54,14 @@ describe('WriteSpace storage helpers', () => {
 
     window.localStorage.setItem('writespace_session', 'invalid');
     expect(getSession()).toBeNull();
+  });
+
+  it('returns false when removing the session fails', () => {
+    vi.spyOn(Storage.prototype, 'removeItem').mockImplementation(() => {
+      throw new DOMException('Storage unavailable', 'SecurityError');
+    });
+
+    expect(clearSession()).toBe(false);
   });
 
   it('clears only WriteSpace records for a controlled reset', () => {

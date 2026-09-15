@@ -3,4 +3,25 @@ import Navbar from '../components/Navbar';
 import BlogCard from '../components/BlogCard';
 import { getPosts, getSession } from '../utils/storage';
 /** Lists all local blog posts newest first for an authenticated reader. */
-export default function Home() { const posts = [...getPosts()].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); const session = getSession(); return <div className="min-h-screen bg-slate-50"><Navbar /><main className="mx-auto max-w-6xl px-4 py-10 sm:px-6"><div className="flex flex-wrap items-center justify-between gap-4"><div><p className="text-sm font-bold uppercase tracking-[0.2em] text-indigo-600">Shared writing</p><h1 className="mt-2 text-3xl font-extrabold text-slate-900">All Blogs</h1></div><Link className="rounded-lg bg-indigo-600 px-4 py-2 font-medium text-white shadow-sm hover:bg-indigo-700" to="/write">Write a post</Link></div>{posts.length ? <section className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">{posts.map((post, index) => <BlogCard index={index} key={post.id} post={post} session={session} />)}</section> : <section className="mt-10 rounded-2xl bg-white p-10 text-center shadow-sm ring-1 ring-slate-200"><h2 className="text-xl font-bold text-slate-900">No blogs yet. Be the first to write one!</h2><Link className="mt-5 inline-block rounded-lg bg-indigo-600 px-4 py-2 font-medium text-white" to="/write">Write</Link></section>}</main></div>; }
+export default function Home() {
+  const posts = [...getPosts()].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const session = getSession();
+  return <div className="min-h-screen bg-slate-50">
+    <Navbar />
+    <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <p className="text-sm font-bold uppercase tracking-[0.2em] text-indigo-600">Shared writing</p>
+          <h1 className="mt-2 text-3xl font-extrabold text-slate-900">All Blogs</h1>
+        </div>
+        <Link className="rounded-lg bg-indigo-600 px-4 py-2 font-medium text-white shadow-sm hover:bg-indigo-700" to="/write">Write a post</Link>
+      </div>
+      {posts.length ? <section className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {posts.map((post, index) => <BlogCard index={index} key={post.id} post={post} session={session} />)}
+        </section> : <section className="mt-10 rounded-2xl bg-white p-10 text-center shadow-sm ring-1 ring-slate-200">
+          <h2 className="text-xl font-bold text-slate-900">No blogs yet. Be the first to write one!</h2>
+          <Link className="mt-5 inline-block rounded-lg bg-indigo-600 px-4 py-2 font-medium text-white" to="/write">Write</Link>
+        </section>}
+    </main>
+  </div>;
+}
